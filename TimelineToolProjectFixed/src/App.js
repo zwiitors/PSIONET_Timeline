@@ -7,13 +7,13 @@ function App() {
 
   useEffect(() => {
     // イベントの初期取得
-    fetch("/api/events")
+    fetch("http://localhost:5000/api/events")
       .then((res) => res.json())
       .then((data) => setEvents(data));
   }, []);
 
   const addEvent = (newEvent) => {
-    fetch("/api/events", {
+    fetch("http://localhost:5000/api/events", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ function App() {
   };
 
   const addTag = (eventId, tag) => {
-    fetch(`/api/events/${eventId}/tags`, {
+    fetch(`http://localhost:5000/api/events/${eventId}/tags`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
