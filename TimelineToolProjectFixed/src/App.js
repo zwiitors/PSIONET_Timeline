@@ -1,41 +1,50 @@
-
-import React, { useState } from 'react';
-import './App.css';
-
-const events = [
-  { year: 2089, title: 'ΨI/ONET教団が東京タワー襲撃', tags: ['ΨI/ONET', '人間主義者', 'シンクロノード'] },
-  { year: 2090, title: '新たな技術発表', tags: ['ΨI/ONET', 'テクノロジー'] },
-];
+import React, { useState, useEffect } from "react";
+import EventForm from "./EventForm";
+import EventList from "./EventList";
 
 function App() {
-  const [searchTag, setSearchTag] = useState('');
+  const [events, setEvents] = useState([]);
 
-  const filteredEvents = events.filter(event => 
-    searchTag === '' || event.tags.includes(searchTag)
-  );
+  useEffect(() => {
+    // イベントの初期取得
+    fetch("/api/events")
+      .then((res) => res.json())
+      .then((data) => setEvents(data));
+  }, []);
+
+  const addEvent = (newEvent) => {
+    fetch("/api/events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newEvent),
+    })
+      .then((res) => res.json())
+      .then((data) => setEvents((prev) => [...prev, data]));
+  };
+
+  const addTag = (eventId, tag) => {
+    fetch(`/api/events/${eventId}/tags`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tag }),
+    })
+      .then((res) => res.json())
+      .then((updatedEvent) => {
+        setEvents((prev) =>
+          prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
+        );
+      });
+  };
 
   return (
-    <div className="App">
-      <header className="header">
-        <input
-          type="text"
-          placeholder="タグで検索"
-          onChange={(e) => setSearchTag(e.target.value)}
-        />
-      </header>
-      <main className="timeline">
-        {filteredEvents.map((event, index) => (
-          <div key={index} className="event-card">
-            <h3>{event.year}</h3>
-            <p>{event.title}</p>
-            <div className="tags">
-              {event.tags.map((tag, idx) => (
-                <span key={idx} className="tag">{tag}</span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </main>
+    <div>
+      <h1>ΨI/ONET 年表ツール</h1>
+      <EventForm onAddEvent={addEvent} />
+      <EventList events={events} onAddTag={addTag} />
     </div>
   );
 }
