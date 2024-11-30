@@ -4,7 +4,6 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-const PORT = 5000; // サーバーのポート番号
 
 // ミドルウェアの設定
 app.use(bodyParser.json());
@@ -64,7 +63,5 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../build", "index.html"));
 });
 
-// サーバーの起動
-app.listen(PORT, () => {
-    console.log(`サーバーがポート ${PORT} で起動しました`);
-});
+// ハンドラとしてエクスポート
+module.exports = app;
