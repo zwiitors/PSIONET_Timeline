@@ -2,20 +2,26 @@ import React, { useState, useEffect } from "react";
 import EventForm from "./EventForm";
 import EventList from "./EventList";
 
-const fetch_url = '/api/get-base-url';
-
 function App() {
   const [events, setEvents] = useState([]);
+  const [baseUrl, setBaseUrl] = useState(""); // ベースURLを保持
 
   useEffect(() => {
-    // イベントの初期取得
-    fetch(fetch_url)
+    // ベースURLを取得
+    fetch("/api/get-base-url")
       .then((res) => res.json())
-      .then((data) => setEvents(data));
+      .then((data) => {
+        setBaseUrl(data.baseUrl);
+        // ベースURLを使用してイベントを取得
+        return fetch(`${data.baseUrl}/api/events`);
+      })
+      .then((res) => res.json())
+      .then((eventData) => setEvents(eventData))
+      .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
   const addEvent = (newEvent) => {
-    fetch(fetch_url, {
+    fetch(`${baseUrl}/api/events`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,11 +29,12 @@ function App() {
       body: JSON.stringify(newEvent),
     })
       .then((res) => res.json())
-      .then((data) => setEvents((prev) => [...prev, data]));
+      .then((data) => setEvents((prev) => [...prev, data]))
+      .catch((error) => console.error("Error adding event:", error));
   };
 
   const addTag = (eventId, tag) => {
-    fetch(fetch_url+'/${eventId}/tags', {
+    fetch(`${baseUrl}/api/events/${eventId}/tags`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +46,8 @@ function App() {
         setEvents((prev) =>
           prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
         );
-      });
+      })
+      .catch((error) => console.error("Error adding tag:", error));
   };
 
   return (
