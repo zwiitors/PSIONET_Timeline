@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 // CORSヘッダーを手動で設定
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // 全てのオリジンを許可
-    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // 許可するHTTPメソッド
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS","DELETE"); // 許可するHTTPメソッド
     res.header("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
     next();
 });
