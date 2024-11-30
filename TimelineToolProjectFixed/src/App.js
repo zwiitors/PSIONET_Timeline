@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import EventForm from "./EventForm";
 import EventList from "./EventList";
+const fetch_url = "https://psionet-timeline.vercel.app/api/events";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -9,7 +10,7 @@ function App() {
   useEffect(() => {
     // ベースURLを取得
     
-    fetch("https://psionet-timeline.vercel.app/api/get-base-url")
+    fetch(fetch_url)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch base URL");
