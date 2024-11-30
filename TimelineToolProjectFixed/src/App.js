@@ -19,7 +19,8 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        setEvents(data);
+        const sortedEvents = data.sort((a, b) => new Date(a.time) - new Date(b.time));
+        setEvents(sortedEvents);
         const allTags = data.flatMap((event) => event.tags);
         setTags([...new Set(allTags)]); // 重複を削除
       })
