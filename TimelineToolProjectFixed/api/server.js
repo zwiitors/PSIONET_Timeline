@@ -20,6 +20,12 @@ app.get("/api/events", (req, res) => {
     res.json(events);
 });
 
+app.get("/api/get-base-url", (req, res) => {
+    const fullUrl = `${req.protocol}://${req.get("host")}`;
+    res.json({ baseUrl: fullUrl });
+});
+
+
 // 新しいイベントを追加するAPI
 app.post("/api/events", (req, res) => {
     const { time, content, tags } = req.body;
