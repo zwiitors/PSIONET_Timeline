@@ -8,13 +8,18 @@ function App() {
 
   useEffect(() => {
     // ベースURLを取得
+    
     fetch("/api/get-base-url")
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to fetch base URL");
+          console.error("Error fetching base URL. Status:", res.status);
+          throw new Error("Base URL not found");
         }
         return res.json();
       })
+      .catch((error) => {
+        console.error("Fetch Base URL Error:", error.message);
+      });
       .then((data) => {
         setBaseUrl(data.baseUrl);
         return fetch(`${data.baseUrl}/api/events`);
