@@ -52,9 +52,18 @@ app.post("/api/events/:id/tags", (req, res) => {
     }
 });
 
+// 静的ファイルの設定を最後に移動
 const path = require("path");
 
+// 静的ファイルの配信
 app.use(express.static(path.join(__dirname, "../build")));
+
+// API ルート以外のリクエストを index.html にフォールバック
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../build", "index.html"));
+    if (req.path.startsWith("/api/")) {
+        res.status(404).json({ error: "API エンドポイントが見つかりません" });
+    } else {
+        res.sendFile(path.join(__dirname, "../build", "index.html"));
+    }
 });
+
