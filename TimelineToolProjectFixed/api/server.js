@@ -6,7 +6,10 @@ const app = express();
 
 // ミドルウェアの設定
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: "*", // 全てのオリジンを許可（注意: セキュリティに影響）
+}));
+
 
 
 // 仮のイベントデータ
