@@ -6,7 +6,22 @@ const app = express();
 
 // ミドルウェアの設定
 app.use(bodyParser.json());
-app.use(cors());
+
+// CORSの設定
+const allowedOrigins = [
+    "https://psionet-timeline.vercel.app", // サーバーのサブドメイン
+    "https://psionet-timeline-<your-deployment-id>.vercel.app" // フロントエンドのサブドメイン
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    }
+}));
 
 // 仮のイベントデータ
 let events = [
