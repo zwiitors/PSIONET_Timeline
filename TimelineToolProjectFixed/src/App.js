@@ -9,16 +9,26 @@ function App() {
   useEffect(() => {
     // ベースURLを取得
     fetch("/api/get-base-url")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch base URL");
+        }
+        return res.json();
+      })
       .then((data) => {
         setBaseUrl(data.baseUrl);
-        // ベースURLを使用してイベントを取得
         return fetch(`${data.baseUrl}/api/events`);
       })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch events");
+        }
+        return res.json();
+      })
       .then((eventData) => setEvents(eventData))
-      .catch((error) => console.error("Error fetching events:", error));
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
 
   const addEvent = (newEvent) => {
     fetch(`${baseUrl}/api/events`, {
