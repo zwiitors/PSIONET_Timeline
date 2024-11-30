@@ -9,8 +9,8 @@ app.use(bodyParser.json());
 
 // CORSの設定
 const allowedOrigins = [
-    "https://psionet-timeline.vercel.app", // サーバーのサブドメイン
-    "https://psionet-timeline-<your-deployment-id>.vercel.app" // フロントエンドのサブドメイン
+    "https://psionet-timeline.vercel.app", // サーバーのデプロイURL
+    "https://psionet-timeline.vercel.app" // 必要なら他のサブドメインも追加
 ];
 
 app.use(cors({
@@ -22,6 +22,7 @@ app.use(cors({
         }
     }
 }));
+
 
 // 仮のイベントデータ
 let events = [
