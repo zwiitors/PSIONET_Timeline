@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const path = require("path");
 
 const app = express();
 
@@ -15,12 +14,6 @@ let events = [
     { id: 2, time: "2090", content: "サンプルイベント2", tags: ["過去"] },
 ];
 
-// ベースURLを取得するAPI
-app.get("/api/get-base-url", (req, res) => {
-    const fullUrl = `${req.protocol}://${req.get("host")}`;
-    res.json({ baseUrl: fullUrl });
-});
-
 // イベント一覧を取得するAPI
 app.get("/api/events", (req, res) => {
     res.json(events);
@@ -29,9 +22,6 @@ app.get("/api/events", (req, res) => {
 // 新しいイベントを追加するAPI
 app.post("/api/events", (req, res) => {
     const { time, content, tags } = req.body;
-    if (!time || !content) {
-        return res.status(400).json({ error: "時間と内容は必須です" });
-    }
     const newEvent = {
         id: events.length + 1,
         time,
@@ -55,13 +45,4 @@ app.post("/api/events/:id/tags", (req, res) => {
     }
 });
 
-// 静的ファイルの配信 (ビルドフォルダ)
-app.use(express.static(path.join(__dirname, "../build")));
-
-// その他のリクエストをすべて index.html にフォールバック
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../build", "index.html"));
-});
-
-// ハンドラとしてエクスポート
-module.exports = app;
+module.exports = app; // 重要：appをエクスポート
