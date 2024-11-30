@@ -51,4 +51,16 @@ app.post("/api/events/:id/tags", (req, res) => {
     }
 });
 
+app.delete("/api/events/:id", (req, res) => {
+  const eventId = parseInt(req.params.id, 10);
+  const eventIndex = events.findIndex((e) => e.id === eventId);
+
+  if (eventIndex !== -1) {
+    events.splice(eventIndex, 1);
+    res.status(204).send();
+  } else {
+    res.status(404).json({ error: "イベントが見つかりません" });
+  }
+});
+
 module.exports = app; // 重要：appをエクスポート
