@@ -48,10 +48,7 @@ app.post("/api/events/:id/tags", (req, res) => {
 
 const path = require("path");
 
-// フロントエンドのビルドファイルを提供
-app.use(express.static(path.join(__dirname, "build")));
-
-// ルートをフロントエンドにリダイレクト
+app.use(express.static(path.join(__dirname, "../build")));
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
+    res.sendFile(path.join(__dirname, "../build", "index.html"));
 });
