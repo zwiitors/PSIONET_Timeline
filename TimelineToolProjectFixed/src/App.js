@@ -2,18 +2,20 @@ import React, { useState, useEffect } from "react";
 import EventForm from "./EventForm";
 import EventList from "./EventList";
 
+const fetch_url = '/api/get-base-url';
+
 function App() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     // イベントの初期取得
-    fetch("http://localhost:5000/api/events")
+    fetch(fetch_url)
       .then((res) => res.json())
       .then((data) => setEvents(data));
   }, []);
 
   const addEvent = (newEvent) => {
-    fetch("http://localhost:5000/api/events", {
+    fetch(fetch_url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +27,7 @@ function App() {
   };
 
   const addTag = (eventId, tag) => {
-    fetch(`http://localhost:5000/api/events/${eventId}/tags`, {
+    fetch(fetch_url+'/${eventId}/tags', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
