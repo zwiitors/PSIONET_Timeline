@@ -12,14 +12,10 @@ function App() {
     fetch("/api/get-base-url")
       .then((res) => {
         if (!res.ok) {
-          console.error("Error fetching base URL. Status:", res.status);
-          throw new Error("Base URL not found");
+          throw new Error("Failed to fetch base URL");
         }
         return res.json();
       })
-      .catch((error) => {
-        console.error("Fetch Base URL Error:", error.message);
-      });
       .then((data) => {
         setBaseUrl(data.baseUrl);
         return fetch(`${data.baseUrl}/api/events`);
