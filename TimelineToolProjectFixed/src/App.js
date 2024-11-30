@@ -9,7 +9,7 @@ function App() {
   useEffect(() => {
     // ベースURLを取得
     
-    fetch("https://psionet-timeline.vercel.app")
+    fetch("https://psionet-timeline.vercel.app/api/get-base-url")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch base URL");
