@@ -110,6 +110,43 @@ function App() {
     window.addEventListener("keydown", handleUndo);
     return () => window.removeEventListener("keydown", handleUndo);
   }, [currentStep, history]);
+  
+    const deleteTag = (eventId, tag) => {
+    fetch(`${fetch_url}/${eventId}/tags/${tag}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((updatedEvent) => {
+        setEvents((prev) =>
+          prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
+        );
+        // タグ候補を更新
+        const remainingTags = updatedEvent.tags;
+        setTags([...new Set(events.flatMap((event) => event.tags))]);
+      })
+      .catch((error) => console.error("Error deleting tag:", error));
+  };
+  
+  const addReference = (eventId) => {
+    // 参照を追加するロジック（例: モーダルで選択したイベントを参照として追加）
+    const referenceId = prompt("Enter the ID of the event to reference:");
+    if (!referenceId) return;
+  
+    fetch(`${fetch_url}/${eventId}/references`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ referenceId }),
+    })
+      .then((res) => res.json())
+      .then((updatedEvent) => {
+        setEvents((prev) =>
+          prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
+        );
+      })
+      .catch((error) => console.error("Error adding reference:", error));
+  };
 
   // フィルタリング
   const filteredEvents = events.filter((event) => {
