@@ -1,14 +1,7 @@
 const express = require("express");
-const cors = require('cors')
 const bodyParser = require("body-parser");
 
 const app = express();
-
-const corsOptions = {
-    origin: "*", // 必要に応じて特定のオリジンを指定
-    methods: ["GET", "POST", "OPTIONS", "DELETE"], // DELETEメソッドを明示的に許可
-    allowedHeaders: ["Content-Type"]
-}
 
 // ミドルウェアの設定
 app.use(bodyParser.json());
