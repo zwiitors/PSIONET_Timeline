@@ -167,7 +167,10 @@ function App() {
         tags={tags}
         onAddTag={addTag}
         onDeleteEvent={deleteEvent}
+        onAddReference={addReference}
+        onDeleteTag={deleteTag}
       />
+
     </div>
   );
 }
