@@ -10,6 +10,7 @@ function App() {
   const [tags, setTags] = useState([]); // 既存タグを保存
   const [filter, setFilter] = useState({ text: "", year: "" });
 
+
   useEffect(() => {
     fetch(fetch_url)
       .then((res) => {
@@ -21,8 +22,9 @@ function App() {
       .then((data) => {
         const sortedEvents = data.sort((a, b) => new Date(a.time) - new Date(b.time));
         setEvents(sortedEvents);
-        const allTags = data.flatMap((event) => event.tags);
-        setTags([...new Set(allTags)]); // 重複を削除
+        const uniqueTags = events.flatMap((event) => event.tags);
+        setTags([...new Set(uniqueTags)]);
+      }, [events]); // イベントリストが更新されるたびにタグを更新
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -91,6 +93,28 @@ function App() {
     const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
     return matchesText && matchesYear;
   });
+
+  const [history, setHistory] = useState([]);
+  const [currentStep, setCurrentStep] = useState(-1);
+  
+  // イベントを追加/削除するたびに履歴を更新
+  useEffect(() => {
+    const newHistory = [...history.slice(0, currentStep + 1), events];
+    setHistory(newHistory);
+    setCurrentStep(newHistory.length - 1);
+  }, [events]);
+  
+  // キーボードイベントを監視
+  useEffect(() => {
+    const handleUndo = (event) => {
+      if (event.ctrlKey && event.key === "z" && currentStep > 0) {
+        setCurrentStep((prev) => prev - 1);
+        setEvents(history[currentStep - 1] || []);
+      }
+    };
+    window.addEventListener("keydown", handleUndo);
+    return () => window.removeEventListener("keydown", handleUndo);
+  }, [currentStep, history]);
 
   return (
     <div>
