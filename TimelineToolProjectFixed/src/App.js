@@ -9,8 +9,10 @@ function App() {
   const [events, setEvents] = useState([]);
   const [tags, setTags] = useState([]); // 既存タグを保存
   const [filter, setFilter] = useState({ text: "", year: "" });
+  const [history, setHistory] = useState([]); // 履歴を管理
+  const [currentStep, setCurrentStep] = useState(-1); // 履歴の現在位置
 
-
+  // 初期データの取得
   useEffect(() => {
     fetch(fetch_url)
       .then((res) => {
@@ -20,15 +22,17 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        const sortedEvents = data.sort((a, b) => new Date(a.time) - new Date(b.time));
+        const sortedEvents = data.sort(
+          (a, b) => new Date(a.time) - new Date(b.time)
+        );
         setEvents(sortedEvents);
-        const uniqueTags = events.flatMap((event) => event.tags);
+        const uniqueTags = data.flatMap((event) => event.tags);
         setTags([...new Set(uniqueTags)]);
-      }, [events]); // イベントリストが更新されるたびにタグを更新
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
+  // イベントの追加
   const addEvent = (newEvent) => {
     fetch(`${fetch_url}`, {
       method: "POST",
@@ -53,7 +57,7 @@ function App() {
       .catch((error) => console.error("Error adding event:", error));
   };
 
-
+  // イベントの削除
   const deleteEvent = (id) => {
     fetch(`${fetch_url}/${id}`, {
       method: "DELETE",
@@ -67,6 +71,7 @@ function App() {
       .catch((error) => console.error("Error deleting event:", error));
   };
 
+  // タグの追加
   const addTag = (eventId, tag) => {
     fetch(`${fetch_url}/${eventId}/tags`, {
       method: "POST",
@@ -85,26 +90,16 @@ function App() {
       .catch((error) => console.error("Error adding tag:", error));
   };
 
-  // フィルタリング
-  const filteredEvents = events.filter((event) => {
-    const matchesText = filter.text
-      ? event.tags.includes(filter.text) || event.content.includes(filter.text)
-      : true;
-    const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
-    return matchesText && matchesYear;
-  });
-
-  const [history, setHistory] = useState([]);
-  const [currentStep, setCurrentStep] = useState(-1);
-  
-  // イベントを追加/削除するたびに履歴を更新
+  // 履歴管理：イベントリストが変更されたときに履歴を更新
   useEffect(() => {
-    const newHistory = [...history.slice(0, currentStep + 1), events];
-    setHistory(newHistory);
-    setCurrentStep(newHistory.length - 1);
+    if (currentStep === -1 || currentStep === history.length - 1) {
+      const newHistory = [...history.slice(0, currentStep + 1), events];
+      setHistory(newHistory);
+      setCurrentStep(newHistory.length - 1);
+    }
   }, [events]);
-  
-  // キーボードイベントを監視
+
+  // Undo機能
   useEffect(() => {
     const handleUndo = (event) => {
       if (event.ctrlKey && event.key === "z" && currentStep > 0) {
@@ -115,6 +110,15 @@ function App() {
     window.addEventListener("keydown", handleUndo);
     return () => window.removeEventListener("keydown", handleUndo);
   }, [currentStep, history]);
+
+  // フィルタリング
+  const filteredEvents = events.filter((event) => {
+    const matchesText = filter.text
+      ? event.tags.includes(filter.text) || event.content.includes(filter.text)
+      : true;
+    const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
+    return matchesText && matchesYear;
+  });
 
   return (
     <div>
