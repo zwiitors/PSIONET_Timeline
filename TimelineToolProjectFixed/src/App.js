@@ -35,13 +35,22 @@ function App() {
       },
       body: JSON.stringify(newEvent),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to add event");
+        }
+        return res.json();
+      })
       .then((data) => {
-        setEvents((prev) => [...prev, data]);
+        setEvents((prev) => {
+          const updatedEvents = [...prev, data];
+          return updatedEvents.sort((a, b) => new Date(a.time) - new Date(b.time));
+        });
         setTags((prev) => [...new Set([...prev, ...(data.tags || [])])]);
       })
       .catch((error) => console.error("Error adding event:", error));
   };
+
 
   const deleteEvent = (id) => {
     fetch(`${fetch_url}/${id}`, {
