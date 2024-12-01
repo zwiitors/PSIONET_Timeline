@@ -13,12 +13,12 @@ const corsOptions = {
 // ミドルウェアの設定
 app.use(bodyParser.json());
 
-// CORSヘッダーを手動で設定
-app.use(cors({
-    origin: "*", // 必要に応じて特定のオリジンを指定
-    methods: ["GET", "POST", "DELETE"], // DELETEメソッドを明示的に許可
-    allowedHeaders: ["Content-Type"]
-}));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); // 全てのオリジンを許可
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE"); // 許可するHTTPメソッド
+    res.header("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
+    next();
+});
 
 
 // 仮のイベントデータ
@@ -28,7 +28,7 @@ let events = [
 ];
 
 // イベント一覧を取得するAPI
-app.get("/api/events", cors(corsOptions), (req, res, next) => {
+app.get("/api/events", (req, res) => {
     res.json(events);
 });
 
