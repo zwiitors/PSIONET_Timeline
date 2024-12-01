@@ -4,6 +4,12 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+const corsOptions = {
+    origin: "*", // 必要に応じて特定のオリジンを指定
+    methods: ["GET", "POST", "OPTIONS", "DELETE"], // DELETEメソッドを明示的に許可
+    allowedHeaders: ["Content-Type"]
+}
+
 // ミドルウェアの設定
 app.use(bodyParser.json());
 
@@ -22,7 +28,7 @@ let events = [
 ];
 
 // イベント一覧を取得するAPI
-app.get("/api/events", (req, res) => {
+app.get("/api/events", cors(corsOptions), (req, res, next) => {
     res.json(events);
 });
 
