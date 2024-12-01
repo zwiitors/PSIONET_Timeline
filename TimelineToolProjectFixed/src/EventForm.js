@@ -7,7 +7,8 @@ function EventForm({ onAddEvent }) {
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [references, setReferences] = useState([]);
-  
+  const [documentUrl, setDocumentUrl] = useState("");
+
   const handleAddReference = (eventId) => {
     setReferences((prev) => [...new Set([...prev, eventId])]);
   };
@@ -17,7 +18,7 @@ function EventForm({ onAddEvent }) {
     const newEvent = {
       time,
       content,
-      tags: tags.split(",").map((tag) => tag.trim()),
+      tags: tags.split(",").map((tag) => tag.trim()), references, documentUrl
     };
     onAddEvent(newEvent);
     setYear("");
