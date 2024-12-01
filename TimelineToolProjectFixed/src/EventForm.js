@@ -6,7 +6,12 @@ function EventForm({ onAddEvent }) {
   const [day, setDay] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-
+  const [references, setReferences] = useState([]);
+  
+  const handleAddReference = (eventId) => {
+    setReferences((prev) => [...new Set([...prev, eventId])]);
+  };
+  
   const handleSubmit = () => {
     const time = `${year}-${month || "01"}-${day || "01"}`;
     const newEvent = {
