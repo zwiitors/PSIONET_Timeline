@@ -1,7 +1,7 @@
 import React from "react";
 import TagInput from "./TagInput";
 
-function EventList({ events, tags, onAddTag, onDeleteEvent, onAddReference, onDeleteTag }) {
+function EventList({ events, onDeleteReference, tags, onAddTag, onDeleteEvent, onAddReference, onDeleteTag }) {
   return (
     <ul style={{ listStyleType: "none", padding: 0 }}>
       {events.map((event) => (
@@ -49,10 +49,22 @@ function EventList({ events, tags, onAddTag, onDeleteEvent, onAddReference, onDe
             <strong>References:</strong>{" "}
             {event.references && event.references.length > 0 ? (
               event.references.map((refId) => (
-                <span key={refId} style={{ marginRight: "8px" }}>
+                <span key={refId} style={{ marginRight: "8px", display: "inline-block" }}>
                   <a href={`#${refId}`} style={{ textDecoration: "none", color: "#007bff" }}>
                     Event {refId}
                   </a>
+                  <button
+                    onClick={() => onDeleteReference(event.id, refId)}
+                    style={{
+                      marginLeft: "4px",
+                      background: "transparent",
+                      border: "none",
+                      color: "red",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ×
+                  </button>
                 </span>
               ))
             ) : (
