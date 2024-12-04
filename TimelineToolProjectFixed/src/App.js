@@ -156,7 +156,7 @@ function App() {
     const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
     return matchesText && matchesYear;
   });
-  setEvents(filteredEvents)
+  setEvents(filteredEvents);
   
   const sortedEvents = events.sort(
             (a, b) => Date.parse(a.time) - Date.parse(b.time)
