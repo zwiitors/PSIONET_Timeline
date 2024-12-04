@@ -49,7 +49,7 @@ function App() {
       })
       .then((data) => {
         setEvents((prev) => {
-          const updatedEvents = [...prev, data];
+          let updatedEvents = [...prev, data];
           return updatedEvents.sort((a, b) => Date.parse(a.time) - Date.parse(b.time));
         });
         setTags((prev) => [...new Set([...prev, ...(data.tags || [])])]);
