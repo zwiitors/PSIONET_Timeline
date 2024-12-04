@@ -23,7 +23,7 @@ function App() {
       })
       .then((data) => {
         const sortedEvents = data.sort(
-          (a, b) => new Date.parse(a.time) - new Date.parse(b.time)
+          (a, b) => Date.parse(a.time) - Date.parse(b.time)
         );
         setEvents(sortedEvents);
         const uniqueTags = data.flatMap((event) => event.tags);
@@ -50,7 +50,7 @@ function App() {
       .then((data) => {
         setEvents((prev) => {
           const updatedEvents = [...prev, data];
-          return updatedEvents.sort((a, b) => new Date.parse(a.time) - new Date.parse(b.time));
+          return updatedEvents.sort((a, b) => Date.parse(a.time) - Date.parse(b.time));
         });
         setTags((prev) => [...new Set([...prev, ...(data.tags || [])])]);
       })
