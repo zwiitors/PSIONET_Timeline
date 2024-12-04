@@ -156,11 +156,6 @@ function App() {
     const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
     return matchesText && matchesYear;
   });
-  setEvents(filteredEvents);
-  
-  const sortedEvents = events.sort(
-            (a, b) => Date.parse(a.time) - Date.parse(b.time)
-          );
   
   return (
     <div>
@@ -168,7 +163,7 @@ function App() {
       <SearchBar onSearch={(criteria) => setFilter(criteria)} />
       <EventForm onAddEvent={addEvent} />
       <EventList
-        events={sortedEvents}
+        events={filteredEvents}
         tags={tags}
         onAddTag={addTag}
         onDeleteEvent={deleteEvent}
