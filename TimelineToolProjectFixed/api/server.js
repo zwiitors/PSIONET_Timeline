@@ -102,11 +102,11 @@ app.post("/api/events/:id/references", (req, res) => {
 // 参照を削除するAPI
 app.delete("/api/events/:id/references/:referenceId", (req, res) => {
     const eventId = parseInt(req.params.id, 10);
-    const { reference } = req.params;
+    const { referenceId } = req.params;
     const event = events.find((e) => e.id === eventId);
 
     if (event) {
-        event.references = event.references.filter((ref) => ref !== reference);
+        event.references = event.references.filter((ref) => ref !== referenceId);
         res.status(200).json(event);
     } else {
         res.status(404).json({ error: "イベントが見つかりません" });
