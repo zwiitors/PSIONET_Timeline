@@ -12,6 +12,16 @@ function App() {
   const [history, setHistory] = useState([]); // 履歴を管理
   const [currentStep, setCurrentStep] = useState(-1); // 履歴の現在位置
 
+  // 年月日の順に比較する関数
+  const compareEvents = (a, b) => {
+    const [yearA, monthA, dayA] = a.time.split("-").map(Number);
+    const [yearB, monthB, dayB] = b.time.split("-").map(Number);
+
+    if (yearA !== yearB) return yearA - yearB;
+    if (monthA !== monthB) return (monthA || 1) - (monthB || 1);
+    return (dayA || 1) - (dayB || 1);
+  };
+
   // 初期データの取得
   useEffect(() => {
     fetch(fetch_url)
@@ -22,9 +32,7 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        const sortedEvents = data.sort(
-          (a, b) => Date.parse(a.time) - Date.parse(b.time)
-        );
+        const sortedEvents = data.sort(compareEvents);
         setEvents(sortedEvents);
         const uniqueTags = data.flatMap((event) => event.tags);
         setTags([...new Set(uniqueTags)]);
@@ -49,8 +57,8 @@ function App() {
       })
       .then((data) => {
         setEvents((prev) => {
-          let updatedEvents = [...prev, data];
-          return updatedEvents.sort((a, b) => Date.parse(a.time) - Date.parse(b.time));
+          const updatedEvents = [...prev, data];
+          return updatedEvents.sort(compareEvents);
         });
         setTags((prev) => [...new Set([...prev, ...(data.tags || [])])]);
       })
@@ -111,7 +119,7 @@ function App() {
     return () => window.removeEventListener("keydown", handleUndo);
   }, [currentStep, history]);
   
-    const deleteTag = (eventId, tag) => {
+  const deleteTag = (eventId, tag) => {
     fetch(`${fetch_url}/${eventId}/tags/${tag}`, {
       method: "DELETE",
     })
@@ -156,7 +164,7 @@ function App() {
     const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
     return matchesText && matchesYear;
   });
-  
+
   return (
     <div>
       <h1>ΨI/ONET 年表ツール</h1>
@@ -170,7 +178,6 @@ function App() {
         onAddReference={addReference}
         onDeleteTag={deleteTag}
       />
-
     </div>
   );
 }
