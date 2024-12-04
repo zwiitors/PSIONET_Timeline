@@ -15,8 +15,8 @@ app.use((req, res, next) => {
 
 // 仮のイベントデータ
 let events = [
-    { id: 1, time: "2089", content: "サンプルイベント1", tags: ["未来"], references: [] },
-    { id: 2, time: "2090", content: "サンプルイベント2", tags: ["過去"], references: [] },
+    { id: 1, time: "2089-01-01", content: "サンプルイベント1", tags: ["未来"], references: [] },
+    { id: 2, time: "2090-01-01", content: "サンプルイベント2", tags: ["過去"], references: [] },
 ];
 
 // イベント一覧を取得するAPI
