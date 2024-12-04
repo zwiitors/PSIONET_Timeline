@@ -156,14 +156,19 @@ function App() {
     const matchesYear = filter.year ? event.time.startsWith(filter.year) : true;
     return matchesText && matchesYear;
   });
-
+  setEvents(filteredEvents)
+  
+  const sortedEvents = events.sort(
+            (a, b) => Date.parse(a.time) - Date.parse(b.time)
+          );
+  
   return (
     <div>
       <h1>ΨI/ONET 年表ツール</h1>
       <SearchBar onSearch={(criteria) => setFilter(criteria)} />
       <EventForm onAddEvent={addEvent} />
       <EventList
-        events={filteredEvents}
+        events={sortedEvents}
         tags={tags}
         onAddTag={addTag}
         onDeleteEvent={deleteEvent}
