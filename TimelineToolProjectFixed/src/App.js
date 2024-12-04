@@ -156,6 +156,20 @@ function App() {
       .catch((error) => console.error("Error adding reference:", error));
   };
 
+  const deleteReference = (eventId, referenceId) => {
+    fetch(`${fetch_url}/${eventId}/references/${referenceId}`, {
+        method: "DELETE",
+    })
+        .then((res) => res.json())
+        .then((updatedEvent) => {
+            setEvents((prev) =>
+                prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
+            );
+        })
+        .catch((error) => console.error("Error deleting reference:", error));
+};
+
+  
   // フィルタリング
   const filteredEvents = events.filter((event) => {
     const matchesText = filter.text
@@ -171,12 +185,13 @@ function App() {
       <SearchBar onSearch={(criteria) => setFilter(criteria)} />
       <EventForm onAddEvent={addEvent} />
       <EventList
-        events={filteredEvents}
-        tags={tags}
-        onAddTag={addTag}
-        onDeleteEvent={deleteEvent}
-        onAddReference={addReference}
-        onDeleteTag={deleteTag}
+          events={filteredEvents}
+          onDeleteReference={deleteReference}
+          tags={tags}
+          onAddTag={addTag}
+          onDeleteEvent={deleteEvent}
+          onAddReference={addReference}
+          onDeleteTag={deleteTag}
       />
     </div>
   );
