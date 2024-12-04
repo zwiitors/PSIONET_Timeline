@@ -14,7 +14,7 @@ function EventForm({ onAddEvent }) {
   };
   
   const handleSubmit = () => {
-    const time = `${year}-${month || "01"}-${day || "01"}`;
+    const time = `${( '0000' + year ).slice( -4 ) || "0001"}-${( '00' + month ).slice( -2 ) || "01"}-${( '00' + day ).slice( -2 ) || "01"}`;
     const newEvent = {
       time,
       content,
